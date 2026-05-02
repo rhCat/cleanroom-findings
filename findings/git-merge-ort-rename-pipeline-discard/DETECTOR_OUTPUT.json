@@ -1,0 +1,81 @@
+{
+  "source": "alembic v0.5.5 / c-typestate-extractor 0.1.0 (Phase 6.1, ba7a3e6)",
+  "analyzed_at": "2026-05-02",
+  "repo": "git",
+  "commit": "e895506107 (HEAD, post-v2.49.0)",
+  "file": "merge-ort.c",
+  "findings": [
+    {
+      "type": "ErrorPropagation",
+      "function": "detect_and_process_renames",
+      "line_approx": 3564,
+      "call": "detect_regular_renames(opt, MERGE_SIDE1)",
+      "pattern": "detection_run |= <call>",
+      "issue": "Return value combined into boolean accumulator (|=). No -1 path in callee — errors are indistinguishable from 'ran successfully'. Empty pairs propagate silently.",
+      "severity": "high"
+    },
+    {
+      "type": "ErrorPropagation",
+      "function": "detect_and_process_renames",
+      "line_approx": 3565,
+      "call": "detect_regular_renames(opt, MERGE_SIDE2)",
+      "pattern": "detection_run |= <call>",
+      "issue": "Same as SIDE1.",
+      "severity": "high"
+    },
+    {
+      "type": "ErrorPropagation",
+      "function": "detect_and_process_renames",
+      "line_approx": 3612,
+      "call": "collect_renames(opt, &combined, MERGE_SIDE1, ...)",
+      "pattern": "clean &= <call>",
+      "issue": "Return is propagated via &=, but callee returns 0 only for directory rename conflicts — not for internal errors or empty-pairs condition. Cannot distinguish 'conflict' from 'detection failed'.",
+      "severity": "medium"
+    },
+    {
+      "type": "ErrorPropagation",
+      "function": "detect_and_process_renames",
+      "line_approx": 3616,
+      "call": "collect_renames(opt, &combined, MERGE_SIDE2, ...)",
+      "pattern": "clean &= <call>",
+      "issue": "Same as SIDE1.",
+      "severity": "medium"
+    },
+    {
+      "type": "ErrorPropagation",
+      "function": "detect_and_process_renames",
+      "line_approx": 3626,
+      "call": "process_renames(opt, &combined)",
+      "pattern": "clean &= <call>",
+      "issue": "Processes empty combined queue if upstream detection failed. Returns clean=1, no renames applied.",
+      "severity": "medium"
+    }
+  ],
+  "vocab_stats": {
+    "function": "detect_and_process_renames",
+    "CHECK": 16,
+    "BORROW": 71,
+    "check_ratio": 0.23,
+    "CONSTRUCT": 1,
+    "CFG_findings": 4,
+    "note": "Low check ratio for a function that orchestrates all path decisions in the merge. CFG symmetry analysis flagged all 4 unchecked callee patterns."
+  },
+  "secondary_candidates": [
+    {
+      "function": "collect_merge_info_callback",
+      "line": 1494,
+      "call": "traverse_trees_wrapper",
+      "issue": "Return discarded; missing paths silently absent from merge tree",
+      "severity": "high",
+      "CHECK": 30, "BORROW": 64, "check_ratio": 0.47
+    },
+    {
+      "function": "merge_ort_nonrecursive_internal",
+      "lines": [5248, 5250],
+      "call": "shift_tree_object",
+      "issue": "NULL return not checked; NULL side2/merge_base passed to collect_merge_info",
+      "severity": "medium",
+      "CHECK": 8, "BORROW": 67, "check_ratio": 0.12
+    }
+  ]
+}

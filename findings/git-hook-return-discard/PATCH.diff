@@ -1,0 +1,68 @@
+# PATCH: Proposed minimal fix for hook-return-discard
+
+## Design Constraints
+
+1. `ref_transaction_commit()` CANNOT change its return value to propagate
+   hook failure — the refs are already written and callers rely on the
+   return value meaning "refs updated successfully". Changing the ABI
+   would break downstream consumers.
+
+2. `ref_transaction_abort()` CAN (in principle) return an error for hook
+   failure, but callers typically ignore the abort return value too.
+   Safer to add a warning() than change the error contract.
+
+3. Git already has `warning()` and `error()` functions that write to stderr
+   without aborting — these are the appropriate vehicle.
+
+## Proposed Diff (illustrative — not compiled/tested)
+
+```diff
+diff --git a/refs.c b/refs.c
+--- a/refs.c
++++ b/refs.c
+@@ -2700,7 +2700,10 @@ int ref_transaction_abort(struct ref_transaction *transaction,
+ 	}
+ 
+-	run_transaction_hook(transaction, "aborted");
++	if (run_transaction_hook(transaction, "aborted"))
++		warning(_("reference-transaction hook failed for 'aborted' phase; "
++			  "external state may be inconsistent"));
+ 
+ 	ref_transaction_free(transaction);
+ 	return ret;
+ }
+ 
+@@ -2732,7 +2732,9 @@ int ref_transaction_commit(struct ref_transaction *transaction,
+ 	ret = refs->be->transaction_finish(refs, transaction, err);
+ 	if (!ret && !(transaction->flags & REF_TRANSACTION_FLAG_INITIAL))
+-		run_transaction_hook(transaction, "committed");
++		if (run_transaction_hook(transaction, "committed"))
++			warning(_("reference-transaction hook failed for 'committed' phase; "
++				  "side effects may not have been applied"));
+ 	return ret;
+ }
+```
+
+## Notes
+
+- The warning goes to stderr, which is captured by git clients supporting
+  sideband-64k (push output). Server-side warnings appear in the push
+  response to the client.
+- We do NOT change `ret` in `ref_transaction_commit` — the refs are written,
+  returning failure would confuse callers and doesn't help recovery.
+- A future enhancement could add a `--hook-failure=abort|warn|ignore` option
+  to `run_transaction_hook` callers, but that is out of scope for this fix.
+
+## Alternative: error() for abort phase
+
+For `ref_transaction_abort`, a stronger option is to propagate via `error()`:
+```diff
+-	run_transaction_hook(transaction, "aborted");
++	if (run_transaction_hook(transaction, "aborted"))
++		error(_("reference-transaction hook failed for 'aborted' phase"));
+```
+`error()` does not change the function's return value but sets `error_count`
+in git's internal state. Whether this is the right choice depends on how
+callers handle abort failures — needs upstream discussion.
+
+## Status: TBD — requires upstream review before finalizing

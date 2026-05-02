@@ -1,0 +1,113 @@
+{
+  "description": "Cross-lens fingerprint: unified-vocab (Phase 6.1) + CFG (symmetry v0.5.0)",
+  "functions": {
+    "run_transaction_hook": {
+      "vocab": {
+        "file": "refs.c",
+        "line": 2614,
+        "stats": {
+          "assert_count": 0,
+          "borrow_count": 5,
+          "call_count": 2,
+          "check_count": 0,
+          "compute_count": 2,
+          "construct_count": 3,
+          "implicit_guard_count": 0,
+          "into_count": 0,
+          "match_discriminant_count": 0,
+          "mutate_count": 5,
+          "read_count": 7,
+          "return_count": 1,
+          "unwind_count": 0
+        }
+      },
+      "cfg": {
+        "total": 0,
+        "by_type": {}
+      }
+    },
+    "ref_transaction_prepare": {
+      "vocab": {
+        "file": "refs.c",
+        "line": 2632,
+        "stats": {
+          "assert_count": 0,
+          "borrow_count": 29,
+          "call_count": 16,
+          "check_count": 5,
+          "compute_count": 3,
+          "construct_count": 0,
+          "implicit_guard_count": 0,
+          "into_count": 0,
+          "match_discriminant_count": 1,
+          "mutate_count": 3,
+          "read_count": 8,
+          "return_count": 4,
+          "unwind_count": 0
+        }
+      },
+      "cfg": {
+        "total": 4,
+        "by_type": {
+          "ErrorPropagation": 4
+        }
+      }
+    },
+    "ref_transaction_commit": {
+      "vocab": {
+        "file": "refs.c",
+        "line": 2710,
+        "stats": {
+          "assert_count": 0,
+          "borrow_count": 11,
+          "call_count": 5,
+          "check_count": 2,
+          "compute_count": 4,
+          "construct_count": 0,
+          "implicit_guard_count": 0,
+          "into_count": 0,
+          "match_discriminant_count": 1,
+          "mutate_count": 2,
+          "read_count": 5,
+          "return_count": 2,
+          "unwind_count": 0
+        }
+      },
+      "cfg": {
+        "total": 3,
+        "by_type": {
+          "ErrorPropagation": 2,
+          "FlowAsymmetry": 1
+        }
+      }
+    },
+    "ref_transaction_abort": {
+      "vocab": {
+        "file": "refs.c",
+        "line": 2683,
+        "stats": {
+          "assert_count": 0,
+          "borrow_count": 10,
+          "call_count": 5,
+          "check_count": 0,
+          "compute_count": 0,
+          "construct_count": 0,
+          "implicit_guard_count": 0,
+          "into_count": 0,
+          "match_discriminant_count": 1,
+          "mutate_count": 1,
+          "read_count": 4,
+          "return_count": 1,
+          "unwind_count": 0
+        }
+      },
+      "cfg": {
+        "total": 3,
+        "by_type": {
+          "ErrorPropagation": 2,
+          "FlowAsymmetry": 1
+        }
+      }
+    }
+  }
+}
