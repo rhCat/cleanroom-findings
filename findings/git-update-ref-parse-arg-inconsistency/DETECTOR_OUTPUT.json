@@ -1,0 +1,154 @@
+{
+  "finding_id": "git-update-ref-parse-arg-inconsistency",
+  "alembic_version": "0.5.5",
+  "analysis_date": "2026-05-03",
+  "corpus": "git v2.49.0 (7d5bb9c6)",
+  "detectors_fired": {
+    "FlowAsymmetry": {
+      "count": 2,
+      "findings": [
+        {
+          "evidence_type": "FlowAsymmetry",
+          "locations": [
+            {
+              "file": "/tmp/alembic-work/git-7d5bb9c6/builtin/update-ref.c",
+              "line": 128,
+              "function": "parse_next_arg",
+              "description": "call site — parse_arg result accepted with only arg.len check; no semantic validation"
+            },
+            {
+              "file": "/tmp/alembic-work/git-7d5bb9c6/builtin/update-ref.c",
+              "line": 65,
+              "function": "parse_refname",
+              "description": "sibling call site — parse_arg result validated with check_refname_format"
+            }
+          ],
+          "description": "Sibling helpers `parse_next_arg` and `parse_refname` both call `parse_arg`; `parse_refname` validates with `check_refname_format`, `parse_next_arg` does not — asymmetric post-parse validation for symref target arguments",
+          "relations": [
+            ["callee", "parse_arg"],
+            ["unchecked_function", "parse_next_arg"],
+            ["checked_function", "parse_refname"],
+            ["missing_validation", "check_refname_format"]
+          ],
+          "confidence": 1.0
+        },
+        {
+          "evidence_type": "FlowAsymmetry",
+          "locations": [
+            {
+              "file": "/tmp/alembic-work/git-7d5bb9c6/builtin/update-ref.c",
+              "line": 128,
+              "function": "parse_next_arg",
+              "description": "call site — parse_arg result not validated for OID or refname"
+            },
+            {
+              "file": "/tmp/alembic-work/git-7d5bb9c6/builtin/update-ref.c",
+              "line": 182,
+              "function": "parse_next_oid",
+              "description": "sibling call site — parse_arg result validated with repo_get_oid_with_flags"
+            }
+          ],
+          "description": "Sibling helpers `parse_next_arg` and `parse_next_oid` both call `parse_arg`; `parse_next_oid` validates the OID with `repo_get_oid_with_flags`, `parse_next_arg` accepts any non-empty string — inconsistent validation depth for stdin command argument parsing",
+          "relations": [
+            ["callee", "parse_arg"],
+            ["unchecked_function", "parse_next_arg"],
+            ["checked_function", "parse_next_oid"],
+            ["missing_validation", "repo_get_oid_with_flags or check_refname_format"]
+          ],
+          "confidence": 1.0
+        }
+      ]
+    },
+    "ErrorPropagation": {
+      "count": 1,
+      "findings": [
+        {
+          "evidence_type": "ErrorPropagation",
+          "locations": [
+            {
+              "file": "/tmp/alembic-work/git-7d5bb9c6/builtin/update-ref.c",
+              "line": 128,
+              "function": "parse_next_arg",
+              "description": "parse_arg result stored without semantic validation — downstream ref-transaction receives unvalidated input"
+            }
+          ],
+          "description": "`parse_next_arg` passes unvalidated symref target to ref-transaction layer; validation gap deferred to backend (if at all)",
+          "relations": [
+            ["callee", "parse_arg"],
+            ["pattern", "missing_domain_validation"],
+            ["downstream", "ref_transaction_update / ref_transaction_create"]
+          ],
+          "confidence": 0.85
+        }
+      ]
+    }
+  },
+  "cross_lens_vocab_profile": {
+    "parse_next_arg": {
+      "file": "builtin/update-ref.c",
+      "line": 108,
+      "stats": {
+        "assert_count": 0,
+        "borrow_count": 4,
+        "call_count": 2,
+        "check_count": 1,
+        "compute_count": 0,
+        "construct_count": 0,
+        "implicit_guard_count": 0,
+        "into_count": 0,
+        "match_discriminant_count": 0,
+        "mutate_count": 1,
+        "read_count": 2,
+        "return_count": 2,
+        "unwind_count": 0
+      }
+    },
+    "parse_refname": {
+      "file": "builtin/update-ref.c",
+      "line": 59,
+      "stats": {
+        "assert_count": 0,
+        "borrow_count": 5,
+        "call_count": 4,
+        "check_count": 3,
+        "compute_count": 1,
+        "construct_count": 0,
+        "implicit_guard_count": 0,
+        "into_count": 0,
+        "match_discriminant_count": 0,
+        "mutate_count": 1,
+        "read_count": 3,
+        "return_count": 1,
+        "unwind_count": 0
+      }
+    },
+    "parse_next_oid": {
+      "file": "builtin/update-ref.c",
+      "line": 163,
+      "stats": {
+        "assert_count": 0,
+        "borrow_count": 7,
+        "call_count": 5,
+        "check_count": 4,
+        "compute_count": 1,
+        "construct_count": 0,
+        "implicit_guard_count": 0,
+        "into_count": 0,
+        "match_discriminant_count": 0,
+        "mutate_count": 2,
+        "read_count": 4,
+        "return_count": 3,
+        "unwind_count": 0
+      }
+    }
+  },
+  "anomaly_signal": {
+    "validation_depth_ratio": {
+      "parse_next_arg_CHECK": 1,
+      "parse_refname_CHECK": 3,
+      "parse_next_oid_CHECK": 4,
+      "interpretation": "parse_next_arg has 1/4 the checks of parse_next_oid and 1/3 of parse_refname despite same dispatch role — signals missing domain validation"
+    },
+    "symmetry_expectation": "all three helpers parse stdin command arguments; callers expect equivalent validation discipline; parse_next_arg breaks this contract"
+  }
+}

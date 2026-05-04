@@ -1,0 +1,107 @@
+{
+  "finding_id": "git-merge-ort-make-virtual-commit-error-discard",
+  "alembic_version": "0.5.5",
+  "analysis_date": "2026-05-03",
+  "corpus": "git v2.49.0 (7d5bb9c6)",
+  "detectors_fired": {
+    "ErrorPropagation": {
+      "count": 2,
+      "findings": [
+        {
+          "evidence_type": "ErrorPropagation",
+          "locations": [
+            {
+              "file": "/tmp/alembic-work/git-7d5bb9c6/merge-ort.c",
+              "line": 5335,
+              "function": "merge_ort_internal",
+              "description": "return value of `make_virtual_commit` not checked for NULL — result used directly as base of commit_list_insert call chain"
+            }
+          ],
+          "description": "`make_virtual_commit` at line 5335 in `merge_ort_internal`: nullable pointer return stored without NULL guard",
+          "relations": [
+            ["callee", "make_virtual_commit"],
+            ["pattern", "nullable_return_unchecked"],
+            ["downstream_deref", "merge-ort.c:5348"]
+          ],
+          "confidence": 0.9
+        },
+        {
+          "evidence_type": "ErrorPropagation",
+          "locations": [
+            {
+              "file": "/tmp/alembic-work/git-7d5bb9c6/merge-ort.c",
+              "line": 5374,
+              "function": "merge_ort_internal",
+              "description": "return value of `make_virtual_commit` not checked for NULL — ->parents dereference on next line"
+            }
+          ],
+          "description": "`make_virtual_commit` at line 5374 in `merge_ort_internal`: nullable pointer return; immediate dereference at line 5377 (`merged_merge_bases->parents`)",
+          "relations": [
+            ["callee", "make_virtual_commit"],
+            ["pattern", "nullable_return_unchecked"],
+            ["immediate_deref", "merge-ort.c:5377"],
+            ["second_deref", "merge-ort.c:5384"]
+          ],
+          "confidence": 0.9
+        }
+      ]
+    },
+    "FlowAsymmetry": {
+      "count": 1,
+      "findings": [
+        {
+          "evidence_type": "FlowAsymmetry",
+          "locations": [
+            {
+              "file": "/tmp/alembic-work/git-7d5bb9c6/merge-ort.c",
+              "line": 5374,
+              "function": "merge_ort_internal",
+              "description": "call site where NULL is not checked"
+            },
+            {
+              "file": "/tmp/alembic-work/git-7d5bb9c6/merge-ort.c",
+              "line": 5355,
+              "function": "merge_ort_internal",
+              "description": "sibling call — result->clean checked for < 0 immediately after merge_ort_internal recursion"
+            }
+          ],
+          "description": "`merge_ort_internal` checks `result->clean < 0` from recursive calls (line 5355) but does not check `make_virtual_commit` return for NULL — asymmetric error handling within the same function",
+          "relations": [
+            ["unchecked_pattern", "make_virtual_commit return"],
+            ["checked_pattern", "result->clean < 0 guard"],
+            ["both_in_function", "merge_ort_internal"]
+          ],
+          "confidence": 0.85
+        }
+      ]
+    }
+  },
+  "cross_lens_vocab_profile": {
+    "merge_ort_internal": {
+      "file": "merge-ort.c",
+      "line": 5310,
+      "stats": {
+        "assert_count": 0,
+        "borrow_count": 18,
+        "call_count": 12,
+        "check_count": 4,
+        "compute_count": 3,
+        "construct_count": 0,
+        "implicit_guard_count": 2,
+        "into_count": 0,
+        "match_discriminant_count": 3,
+        "mutate_count": 4,
+        "read_count": 7,
+        "return_count": 2,
+        "unwind_count": 0
+      }
+    }
+  },
+  "anomaly_signal": {
+    "null_guard_asymmetry": {
+      "result_clean_checked": true,
+      "make_virtual_commit_checked": false,
+      "interpretation": "function guards recursive sub-merge results (clean < 0) but does not guard the virtual commit allocation that the loop depends on — inconsistent NULL discipline within a single function body"
+    }
+  }
+}

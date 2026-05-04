@@ -33,6 +33,9 @@ run_test git-hook-return-discard
 run_test git-hook-return-discard-patch
 # git-merge-ort-rename-pipeline-discard has no Dockerfile (documentation-only)
 run_test git-merge-ort-rename-pipeline-discard-patch
+# git-merge-ort-make-virtual-commit-error-discard has no Dockerfile (documentation-only)
+run_test git-merge-ort-make-virtual-commit-error-discard-patch
+run_test git-update-ref-parse-arg-inconsistency-patch
 
 echo ""
 echo "================================================================"
