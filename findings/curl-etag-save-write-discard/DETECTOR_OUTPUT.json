@@ -1,0 +1,42 @@
+{
+  "finding_id": "curl-etag-save-write-discard",
+  "engine": "alembic / magnumopus:transmutation",
+  "alembic_version": "0.9.0",
+  "analysis_date": "2026-07-18",
+  "corpus": "curl master @ 1128177a6f725d1f8c4cba4f7ff6532969109e7a",
+  "governed_run": {
+    "citrinitas_run_id": "450fe03a291c4ac5-ground",
+    "putrefactio_run_id": "450fe03a291c4ac5",
+    "node": "ruis-mac-mini govd 100.101.222.80:5773",
+    "authority": "exod"
+  },
+  "detectors_fired": {
+    "ErrorPropagation": {
+      "count": 1,
+      "findings": [
+        {
+          "evidence_type": "ErrorPropagation",
+          "shape": "ABSORB",
+          "family": "error",
+          "grounding": "error_propagation_absorb",
+          "conf": 1.0,
+          "location": {
+            "file": "src/tool_cb_hdr.c",
+            "line": 276,
+            "function": "save_etag"
+          },
+          "target": {
+            "bound": "fwrite",
+            "kind": "error"
+          },
+          "description": "save_etag() calls fwrite()/fputc() whose return values are not checked (and (void)-casts fflush()), while the sibling ftruncate()/fseek() call in the same function IS checked and returns CURL_WRITEFUNC_ERROR on failure. Intra-function return-path asymmetry: the write result is absorbed."
+        }
+      ]
+    }
+  },
+  "adjudication": {
+    "verdict": "TRUE",
+    "reviewer": "human + governed cleanroom red/green",
+    "note": "Reproduced on stock curl 8.19.0 (built from source): a RLIMIT_FSIZE=0 write failure leaves the --etag-save file empty while curl exits 0. Fix verified in the paired patch cleanroom (curl: (23), exit 23; happy path unchanged)."
+  }
+}
