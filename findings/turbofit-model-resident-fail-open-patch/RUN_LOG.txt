@@ -1,0 +1,28 @@
+module under test:
+f2e3dbc327090a820a96cd2bdb342aec4bbbad80d0d7691d8c7b45fd66ff8783  turbohaul_client.py
+
+== control: a well-formed RESIDENT status ==
+   _model_is_resident(resident)      -> True   (expected True)
+
+== drifted shapes, model STILL RESIDENT in every one ==
+   empty status (transport degraded)          -> True
+   residents as dict, not list                -> True
+   key renamed residents -> loaded            -> True
+   entry keyed 'id' (outside the 4 tried)     -> True
+   active nested under data/                  -> True
+
+   misread as 'not resident': 0/5
+
+== regression control: a GENUINE unload (turbofit's own test shape) ==
+   _model_is_resident(unloaded)      -> False   (must be False)
+
+== the unload-verification loop, server has NOT unloaded ==
+   well-formed, still resident                -> raised TurbohaulClientError after 40 polls
+   GENUINE unload (must succeed)              -> RETURNED-SUCCESS
+   empty status (transport degraded)          -> raised TurbohaulClientError after 41 polls
+   residents as dict, not list                -> raised TurbohaulClientError after 40 polls
+   key renamed residents -> loaded            -> raised TurbohaulClientError after 40 polls
+   entry keyed 'id' (outside the 4 tried)     -> raised TurbohaulClientError after 40 polls
+   active nested under data/                  -> raised TurbohaulClientError after 40 polls
+
+PASS — 0/5 misread; every unreadable status now times out and raises, and the genuine unload still completes

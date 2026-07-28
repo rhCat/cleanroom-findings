@@ -1,0 +1,63 @@
+{
+ "finding_id": "turbofit-model-resident-fail-open",
+ "engine": "alembic / magnumopus:transmutation",
+ "alembic_version": "0.9.0",
+ "analysis_date": "2026-07-28",
+ "corpus": "SouthpawIN/turbofit @ a6326c3d17aa11be7349196397af17e9b16b9079 (subpath src/turbofit_runtime)",
+ "warehouse_repo": "turbofitruntime-dev-a6326c3d",
+ "governed_run": {
+  "node": "ruis-mac-mini govd 100.101.222.80:5773",
+  "chip_sha": "e3fe8f5b9dd28b76",
+  "calcination_run_id": "2bcf927bc516493b",
+  "citrinitas_run_id": "a7ad42b7816d4f13",
+  "putrefactio_run_id": "4b018eb25d7740d1",
+  "cibatio_run_id": "cdb26098c86349c7",
+  "rosarium_run_id": "f184a56e79fa4ca3",
+  "coniunctio_run_id": "3cc8dbfd76d947bd",
+  "cleanroom_scaffold_run_id": "b5d2ed39a330460e",
+  "cleanroom_verify_run_id": "2c1afa9bca454604",
+  "cleanroom_spec_sha": "e21d574a2b15"
+ },
+ "corpus_scale": {"functions": 333, "flows": 406, "claims": 626, "symmetry_items": 118},
+ "detectors_fired": {
+  "ErrorPropagation": {
+   "count": 79,
+   "note": "79 ABSORB sites across 30 functions that absorb and never raise; concentrated in turbohaul_backend.py (8), backend.py (7), recipes.py (6), tailnet.py (6)",
+   "findings": [
+    {
+     "evidence_type": "ErrorPropagation",
+     "shape": "ABSORB",
+     "family": "error",
+     "fn": "_model_is_resident",
+     "file": "src/turbofit_runtime/turbohaul_client.py",
+     "line": 227,
+     "grounding": "error_propagation_absorb",
+     "guard": "g_no_cfg",
+     "conf": 1.0,
+     "selected_because": "the swallowed condition produces a PLAUSIBLE WRONG VALUE (False = 'not resident') rather than a crash, and the single caller treats that value as proof of unload"
+    },
+    {
+     "evidence_type": "ErrorPropagation",
+     "shape": "ABSORB",
+     "family": "error",
+     "fn": "_model_in_flight",
+     "file": "src/turbofit_runtime/turbohaul_backend.py",
+     "line": 307,
+     "grounding": "error_propagation_absorb",
+     "conf": 1.0,
+     "note": "same shape over (active|loading|grace)+queue, called at :119. NOT reproduced in this cleanroom. Note _model_resident sits at :311 checking FIVE keys incl. idle_hot/residents — two predicates over the same status with different key sets, in different files."
+    }
+   ]
+  }
+ },
+ "verification": {
+  "method": "magnumopus:cleanroom RED/GREEN, docker --network none, module vendored verbatim",
+  "red": {"ok": true, "misread": "5/5", "loop_verdict": "RETURNED-SUCCESS after 1 poll"},
+  "green": {"ok": true, "misread": "0/5", "loop_verdict": "raises TurbohaulClientError"},
+  "regression_control": {"case": "{active: None, residents: []}", "both_phases": "success — preserved"}
+ },
+ "not_claimed": [
+  "that a live Turbohaul Manager v0.7 emits any of the five drifted shapes — the drift set is constructed; reachability needs the API contract",
+  "coniunctio witness_ratio 0.0 for this corpus is a SCOPE artifact (tests/ is a sibling of src/ and was outside the analysed subpath), not a property of the repo"
+ ]
+}

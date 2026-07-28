@@ -1,0 +1,33 @@
+module under test:
+ec95154db4710fa32f23082d6bd9daa75c3e5802e5f94bb6885d7c64c6e6ad2c  turbohaul_client.py
+
+== control: a well-formed RESIDENT status ==
+   _model_is_resident(resident)      -> True   (expected True)
+
+== drifted shapes, model STILL RESIDENT in every one ==
+   empty status (transport degraded)          -> False
+   residents as dict, not list                -> False
+   key renamed residents -> loaded            -> False
+   entry keyed 'id' (outside the 4 tried)     -> False
+   active nested under data/                  -> False
+
+   misread as 'not resident': 5/5
+
+== regression control: a GENUINE unload (turbofit's own test shape) ==
+   _model_is_resident(unloaded)      -> False   (must be False)
+
+== the unload-verification loop, server has NOT unloaded ==
+   well-formed, still resident                -> raised TurbohaulClientError after 40 polls
+   GENUINE unload (must succeed)              -> RETURNED-SUCCESS
+   empty status (transport degraded)          -> RETURNED-SUCCESS
+       FAIL-OPEN: reported unloaded after 1 poll(s) while the model is still resident
+   residents as dict, not list                -> RETURNED-SUCCESS
+       FAIL-OPEN: reported unloaded after 1 poll(s) while the model is still resident
+   key renamed residents -> loaded            -> RETURNED-SUCCESS
+       FAIL-OPEN: reported unloaded after 1 poll(s) while the model is still resident
+   entry keyed 'id' (outside the 4 tried)     -> RETURNED-SUCCESS
+       FAIL-OPEN: reported unloaded after 1 poll(s) while the model is still resident
+   active nested under data/                  -> RETURNED-SUCCESS
+       FAIL-OPEN: reported unloaded after 1 poll(s) while the model is still resident
+
+CONTRADICTION — 5/5 drifted status shapes reported the model UNLOADED while it is still resident, on the first poll; the TurbohaulClientError timeout is unreachable

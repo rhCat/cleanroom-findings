@@ -1,0 +1,39 @@
+--- a/src/turbofit_runtime/turbohaul_client.py
++++ b/src/turbofit_runtime/turbohaul_client.py
+@@ -222,7 +222,35 @@
+             return any(value.get(key) == model for key in ("model_tag", "model", "name", "tag"))
+         return False
+ 
++    def readable(value: object) -> bool:
++        """Can this entry even be COMPARED to a model name?"""
++        return isinstance(value, str) or (
++            isinstance(value, dict)
++            and any(key in value for key in ("model_tag", "model", "name", "tag")))
++
+     if matches(status.get("active")) or matches(status.get("idle_hot")):
+         return True
+     residents = status.get("residents")
+-    return isinstance(residents, list) and any(matches(item) for item in residents)
++    if isinstance(residents, list):
++        if any(matches(item) for item in residents):
++            return True
++        # An EMPTY list is a proven absence. A non-empty list whose entries we cannot read is
++        # not — it is the same unreadable status wearing the right type.
++        if not residents or all(readable(item) for item in residents):
++            return False
++    # Anything else is a status we cannot READ, not a model we have proven ABSENT. The only
++    # caller is the unload-verification loop, which treats False as "the model is gone" and
++    # returns success — so answering False here reports a false unload on an empty response,
++    # a renamed key, a retyped field, or an unrecognised entry shape, and makes its
++    # TurbohaulClientError timeout unreachable. Fail CLOSED: stay resident, let it time out.
++    return True
++    residents = status.get("residents")
++    if isinstance(residents, list):
++        # the shape we understand: an empty or non-matching list is a PROVEN absence
++        return any(matches(item) for item in residents)
++    # Anything else is a status we cannot READ, not a model we have proven ABSENT. The only
++    # caller is the unload-verification loop, which treats False as "the model is gone" and
++    # returns success — so answering False here reports a false unload on an empty response,
++    # a renamed key, or a retyped field, and makes its TurbohaulClientError timeout
++    # unreachable. Fail CLOSED: stay resident, let the caller time out and raise.
++    return True
