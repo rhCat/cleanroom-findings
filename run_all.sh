@@ -36,6 +36,8 @@ run_test git-merge-ort-rename-pipeline-discard-patch
 # git-merge-ort-make-virtual-commit-error-discard has no Dockerfile (documentation-only)
 run_test git-merge-ort-make-virtual-commit-error-discard-patch
 run_test git-update-ref-parse-arg-inconsistency-patch
+run_test turbofit-model-resident-fail-open
+run_test turbofit-model-resident-fail-open-patch
 
 echo ""
 echo "================================================================"
