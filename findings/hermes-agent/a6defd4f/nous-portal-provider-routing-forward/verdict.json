@@ -1,0 +1,24 @@
+{
+  "mode": "single",
+  "ok": true,
+  "phase_requested": "both",
+  "phases": {
+    "green": {
+      "exit": 0,
+      "ok": true,
+      "overlaid": [
+        "Dockerfile",
+        "repro/repro.sh"
+      ],
+      "ran": true
+    },
+    "red": {
+      "exit": 0,
+      "ok": true,
+      "ran": true
+    }
+  },
+  "repro_dir": "/Volumes/prod/cyberware_cargo/hermes-agent-root-prod-a6defd4f/cleanroom/c3-portal-routing/repro",
+  "schema": "cleanroom_verdict/v0.1",
+  "spec_sha": "98709da59064"
+}
