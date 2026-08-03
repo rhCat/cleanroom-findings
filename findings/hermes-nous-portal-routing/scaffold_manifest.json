@@ -1,0 +1,15 @@
+{
+  "files": {
+    "Dockerfile": "59313e83b7d08022172f6856c715b8f3c5ee74790e717dd941de462a32fa1b64",
+    "README.md": "2e0632ce5cef39282ba53f38c9ac24c50080ad963c18f019497067d4502cb2b2",
+    "expect.json": "00ae228e87f4a4d545fde6d0b345f3a7cc460e6c1ea37f8088ab7fcb0b70e752",
+    "fix/README.md": "2e8531d2e5716cd8e56c6ef8ebddf5b0ee5ce14a989dd130d36cba19c1ea2601",
+    "repro/repro.sh": "1b7d50d929ff4f7b540128223d0da57a629466da24b108fbdb00907a5dc754be",
+    "spec.json": "92088f72d33f39f1994f2800993f42155432c6ba514334b36f25d1571ac774cd"
+  },
+  "mode": "single",
+  "out_dir": "/Volumes/prod/cyberware_cargo/hermes-agent-root-prod-a6defd4f/cleanroom/c3-portal-routing/repro",
+  "spec_sha": "98709da590649935867688e56ab83c765bbfcb0a0a41e332b95b64d74c16000d",
+  "status": "ok",
+  "tool": "cleanroom_scaffold"
+}

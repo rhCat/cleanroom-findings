@@ -1,0 +1,15 @@
+{
+  "files": {
+    "Dockerfile": "59313e83b7d08022172f6856c715b8f3c5ee74790e717dd941de462a32fa1b64",
+    "README.md": "4618748a910b56342f35df413d1b4a290db9d349c8ed60ec72e77243d5166c69",
+    "expect.json": "00ae228e87f4a4d545fde6d0b345f3a7cc460e6c1ea37f8088ab7fcb0b70e752",
+    "fix/README.md": "2e8531d2e5716cd8e56c6ef8ebddf5b0ee5ce14a989dd130d36cba19c1ea2601",
+    "repro/repro.sh": "77b38d3ac28eb61d46c3e9a62761f898beae64726784bda6332faa30320ace63",
+    "spec.json": "c598b4c3d9113ee2fa265c2b91d0dccb89ae76a8eae97b16c7bdc7fcfe19d0c2"
+  },
+  "mode": "single",
+  "out_dir": "/Volumes/prod/cyberware_cargo/hermes-agent-root-prod-a6defd4f/cleanroom/c1-idle-reaper/repro",
+  "spec_sha": "8c962d74e4266f072585a7a27b42ec83b67546c1c9b6e15590e52680a1604845",
+  "status": "ok",
+  "tool": "cleanroom_scaffold"
+}

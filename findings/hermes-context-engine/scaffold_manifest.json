@@ -1,0 +1,15 @@
+{
+  "files": {
+    "Dockerfile": "59313e83b7d08022172f6856c715b8f3c5ee74790e717dd941de462a32fa1b64",
+    "README.md": "2477ba0c72e54002ae5eceab3df8740b1db3cb29f0a8b4f331e5dfeebcfe7166",
+    "expect.json": "00ae228e87f4a4d545fde6d0b345f3a7cc460e6c1ea37f8088ab7fcb0b70e752",
+    "fix/README.md": "2e8531d2e5716cd8e56c6ef8ebddf5b0ee5ce14a989dd130d36cba19c1ea2601",
+    "repro/repro.sh": "4b342ee21a61f1ab73873d29ae5374df301524a17150a6eac706f3797a40f911",
+    "spec.json": "b92325616a9f9df29e74c6c43c784882169dd9df5b0e333376b9a6d4b9bb2e26"
+  },
+  "mode": "single",
+  "out_dir": "/Volumes/prod/cyberware_cargo/hermes-agent-root-prod-a6defd4f/cleanroom/c4-context-engine/repro",
+  "spec_sha": "7327981e3c62f4cbfe85e886fcb74958a1f7fd952fe2121e9acb71418f3ceec8",
+  "status": "ok",
+  "tool": "cleanroom_scaffold"
+}

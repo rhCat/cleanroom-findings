@@ -1,0 +1,5 @@
+===== RED (stock build) =====
+CWD_STALE_RECORD_SURVIVES
+
+===== GREEN (fix overlay) =====
+CWD_RECORD_CLEARED

@@ -1,0 +1,15 @@
+{
+  "files": {
+    "Dockerfile": "59313e83b7d08022172f6856c715b8f3c5ee74790e717dd941de462a32fa1b64",
+    "README.md": "ac62d3ba0e3e676285dd6a920b1610208629d9338d4d1313253a4c8c167065e0",
+    "expect.json": "00ae228e87f4a4d545fde6d0b345f3a7cc460e6c1ea37f8088ab7fcb0b70e752",
+    "fix/README.md": "2e8531d2e5716cd8e56c6ef8ebddf5b0ee5ce14a989dd130d36cba19c1ea2601",
+    "repro/repro.sh": "fe2acc6958dce5f70f240e96652efea22060399a2a4f566fa1982ef5b18822a3",
+    "spec.json": "33dde7948f4094f7a5d66f3f9168be58ab33a5eefef6e6a41e2ae4dd4def28fa"
+  },
+  "mode": "single",
+  "out_dir": "/Volumes/prod/cyberware_cargo/hermes-agent-root-prod-a6defd4f/cleanroom/c2-cwd-normalize/repro",
+  "spec_sha": "8db325f82824b53c6ef4e8bb5a92e66e94d239d4795b802d82ff08595215a724",
+  "status": "ok",
+  "tool": "cleanroom_scaffold"
+}

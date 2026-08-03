@@ -1,0 +1,5 @@
+===== RED (stock build) =====
+CONTEXT_ENGINE_STUCK_ON_OLD_SESSION
+
+===== GREEN (fix overlay) =====
+CONTEXT_ENGINE_TRANSITIONED
